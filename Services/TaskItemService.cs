@@ -25,24 +25,40 @@ namespace CRUD.Services
             return await _repository.GetById(id);
         }
 
-        public async Task Create(TaskItemDto taskItemDto)
+        public async Task Create(TaskItemDto taskItem)
         {
-            var taskItem = _mapper.Map<TaskItem>(taskItemDto);
-            await _repository.Add(taskItem);
+            var task = _mapper.Map<TaskItem>(taskItem);
+            await _repository.Add(task);
         }
 
-        public async Task Update(int id, TaskItem updatedTaskItem)
-        {
-            var task = await _repository.GetById(id);
-            if (task != null)
-            {
-                task.Name = updatedTaskItem.Name;
-                task.Description = updatedTaskItem.Description;
-                task.Completed = updatedTaskItem.Completed;
+        //public async Task Update(int id, TaskItemDto taskItemDto)
+        //{
+        //    var taskItem = await _repository.GetById(id);
+        //    if (taskItem != null)
+        //    {
+        //        taskItem.Name = taskItemDto.Name;
+        //        taskItem.Description = taskItemDto.Description;
+        //        taskItem.Completed = taskItemDto.Completed;
 
-                await _repository.Update(task);
+        //        var task = _mapper.Map<TaskItem>(taskItemDto);
+        //        await _repository.Update(task);
+        //    }
+        //}
+
+        public async Task Update(int id, TaskItemDto taskItemDto)
+        {
+            var taskItem = await _repository.GetById(id);
+            if (taskItem != null)
+            {
+                taskItem.Name = taskItemDto.Name ?? taskItem.Name;
+                taskItem.Description = taskItemDto.Description ?? taskItem.Description;
+                taskItem.Completed = taskItemDto.Completed ?? taskItem.Completed;
+
+                var task = _mapper.Map<TaskItem>(taskItemDto);
+                await _repository.Update(taskItem);
             }
         }
+
 
         public async Task<bool> Delete(int id)
         {
